@@ -21,22 +21,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
+      - name: Install pandoc
+        run: |
+          echo "Installing pandoc"
+          # wget https://github.com/jgm/pandoc/releases/download/3.1/pandoc-3.1-linux-amd64.tar.gz -O /tmp/pandoc-3.1-linux-amd64.tar.gz
+          wget https://pptv-livecenter.ks3-cn-shanghai.ksyuncs.com/pandoc-3.1-linux-amd64.tar.gz -O /tmp/pandoc-3.1-linux-amd64.tar.gz
+          tar -xzf /tmp/pandoc-3.1-linux-amd64.tar.gz -C /tmp
+          mv /tmp/pandoc-3.1/bin/pandoc /usr/bin
+          ln -s /usr/bin/pandoc /usr/bin/pandoc-lua
+          ln -s /usr/bin/pandoc /usr/bin/pandoc-server
+          pandoc --version
+      - name: Check Python
+        run: python --version
+
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Build html files
+        run: python ./.github/build_html.py -b .
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: '.'
+          path: '.site'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
