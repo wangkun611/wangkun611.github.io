@@ -32,9 +32,10 @@ def main(base, src, dest):
         else:
             html = ConvertFile(base, os.path.join(src, file), dest)[0]
             htmlfiles.append(html)
+    htmlfiles = list(filter(lambda file: file != "", htmlfiles))
     if len(htmlfiles):
         with open(os.path.join(dest, "index.html"), "w", encoding="utf-8") as f:
-            fli = map(lambda file: "".join(["<li><a href=\"/",  pathlib.Path(file).name, "\">", pathlib.Path(file).name, "</a> <date></date></li>"]), htmlfiles)
+            fli = map(lambda file: "".join(["<li><a href=\"./",  pathlib.Path(file).name, "\">", pathlib.Path(file).name, "</a> <date></date></li>"]), htmlfiles)
             f.write("<ol>")
             f.write("".join(list(fli)))
             f.write("</ol>")
