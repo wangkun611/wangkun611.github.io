@@ -30,12 +30,11 @@ jobs:
       - name: Install pandoc
         run: |
           echo "Installing pandoc"
-          # wget https://github.com/jgm/pandoc/releases/download/3.1/pandoc-3.1-linux-amd64.tar.gz -O /tmp/pandoc-3.1-linux-amd64.tar.gz
-          wget https://pptv-livecenter.ks3-cn-shanghai.ksyuncs.com/pandoc-3.1-linux-amd64.tar.gz -O /tmp/pandoc-3.1-linux-amd64.tar.gz
+          wget https://github.com/jgm/pandoc/releases/download/3.1/pandoc-3.1-linux-amd64.tar.gz -O /tmp/pandoc-3.1-linux-amd64.tar.gz -o /dev/null
           tar -xzf /tmp/pandoc-3.1-linux-amd64.tar.gz -C /tmp
-          mv /tmp/pandoc-3.1/bin/pandoc /usr/bin
-          ln -s /usr/bin/pandoc /usr/bin/pandoc-lua
-          ln -s /usr/bin/pandoc /usr/bin/pandoc-server
+          sudo mv /tmp/pandoc-3.1/bin/pandoc /usr/bin
+          sudo ln -s /usr/bin/pandoc /usr/bin/pandoc-lua
+          sudo ln -s /usr/bin/pandoc /usr/bin/pandoc-server
           pandoc --version
       - name: Check Python
         run: python --version
