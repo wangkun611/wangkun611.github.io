@@ -19,7 +19,7 @@ $endfor$
   </header>
   <ol id="articles" reversed>
   $for(articles)$
-      <li><a href="$it.path$">$it.title$</a> <date>$it.date$</date></li>
+      <li><a href="/$it.path$">$it.title$</a> <date>$it.date$</date></li>
   $endfor$
   </ol>
 </body>
