@@ -1,7 +1,9 @@
 ---
 title: 'Namespace 简介'
 keywords: [namespace, cgroup, ip, network, mount, pid, time, user, uts]
-...
+date: 2023-02-27
+draft: false
+---
 
 namespace是一个抽象概念，用来隔离Linux的全局系统资源。处于相同namespace的进程可以看到相同的资源，该资源对于其他namespace的进程是不可见的。目前(5.13)提供了8种不同的namespace。
 

@@ -37,7 +37,9 @@ jobs:
           sudo ln -s /usr/bin/pandoc /usr/bin/pandoc-server
           pandoc --version
       - name: Check Python
-        run: python --version
+        run: | 
+          python --version
+          pip install python-frontmatter
 
       - name: Checkout
         uses: actions/checkout@v3
