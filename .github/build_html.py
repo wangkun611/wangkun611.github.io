@@ -56,7 +56,7 @@ def ConvertFile(base, src, dest):
             "date":  article["date"],
             "path": relative.as_posix().replace(suffix, ".html")
         }
-    elif suffix in [".css", ".jpg", ".png", ".svg"]:
+    elif suffix in [".css", ".jpg", ".png", ".svg", ".txt"]:
         pathlib.Path(dest).mkdir(parents=True, exist_ok=True)
         dest = os.path.join(dest, name)
         subprocess.run(["cp", src, dest]) 
