@@ -1,10 +1,10 @@
 ---
-title: 一种成员变量的反射方法
+title: C++ 一种成员变量的反射方法
 date: 2023-02-28
 draft: true
 ---
 
-虽然C++没有提供完善的内建反射机制，但是在工程领域却有强烈的反射需求。本文介绍一种通过列表初始化和结构化绑定获取成员变量，可以获取到成员变量的数量和应用，不过无法获取成员变量名。
+虽然C++没有提供完善的内建反射机制，但是在工程领域却有强烈的反射需求。本文介绍一种通过列表初始化和结构化绑定获取成员变量，可以获取到成员变量的数量和引用，不过无法获取成员变量名。另外本方法只针对POD类型，其他复杂类型可能会失效，比如：std::vector。
 
 ## 列表初始化(List initialization)
 从C++11开始可以使用初始化列表初始化对象，使用范例如下：
@@ -22,7 +22,7 @@ Vector v2{1.0, 2.0};
 Vector v3{1.0, 2.0, 3.0};
 ```
 
-初始化列表的成员数量可以小于类的成员变量。可以理由这个特性获取类的成员变量数量。
+初始化列表的成员数量可以小于类的成员变量。我们可以利用这个特性获取类的成员变量数量。
 
 ```C++ 
 Vector v1{1.0};                // 编译通过
@@ -32,7 +32,7 @@ Vector v4{1.0, 2.0, 3.0, 4.0}  // 编译不通过
 Vector v5{1.0, 2.0, 3.0, 4.0}  // 编译不通过
 ```
 
-根据上面例子，我们可以写非常多代码，通过最后一个可以编译通过的代码我们就知道了类的成员变量数量。问题来了，我们怎么让编译器告诉我们v3编译通过，v4编译不通过。下面我们就介绍C++20引入的`requires`关键字。
+根据上面例子，我们可以写非常多vN代码，根据最后一个可以编译通过的代码我们就知道了类的成员变量数量。问题来了：我们怎么让编译器告诉我们v3可以通过编译，v4不可以通过编译呢？下面我们就介绍C++20引入的`requires`关键字。
 
 ## Requires 表达式
 
@@ -43,7 +43,7 @@ requires { requirement-seq }
 requires ( parameter-list (optional) ) { requirement-seq }
 ```
 
-`requirement-seq`是表达式列表，如果表达式可以编译通过，返回 `true`；无法编译通过返回 `false`(这个表达不是特别准确，请参考专门介绍`concept`和`requires`的文章)。
+`requirement-seq`是表达式列表，如果表达式可以编译通过，返回 `true`；无法编译通过返回 `false`(这个描述不是特别准确。有兴趣的话，请参考专门介绍`concept`和`requires`的文章)。
 
 举例如下：
 
@@ -61,7 +61,6 @@ bool has_least_one_int_member() {
         return true;
     return false;
 }
-
 ```
 
 `has_abc_member`判断`T`是否有`public`的成员变量`abc`。
@@ -99,7 +98,7 @@ size_t member_count() {
 1. `member_count`只能判断`int`类型的成员，其他的类型怎么办
 2. 到底多少个才算是适当的数量呢
 
-我们解析了依次解决这两个问题
+我们接下来依次解决这两个问题
 
 ### 适配所有类型
 
@@ -115,7 +114,7 @@ public:
 }
 ```
 
-上面代码把`Container`类型转换成`bool`类型，如果`Container`为空，返回`false`,否则返回`true`。C++支持类型转换函数可以是模版。
+上面代码把`Container`类型转换成`bool`类型，如果`Container`为空，返回`false`,否则返回`true`。类型转换函数支持模版。
 
 ```C++
 struct UniversalType {
@@ -163,16 +162,20 @@ consteval size_t member_count() {
 }
 ```
 
-`member_count`尝试添加一个`UniversalType`参数初始化`T`,如果成功，然后添加一个模版参数调用自己，如果失败返回模板参数个数，该数量就是`T`的成员变量的数量。
+`member_count`尝试添加一个`UniversalType`参数初始化`T`。如果成功，就添加一个模版参数调用自己，如果失败返回模板参数个数，该数量就是`T`的成员变量的数量。
+
+至此，获取成员变量数量的关键技术已经全部打通。下面介绍怎么获取成员变量的引用。
 
 ## 结构化绑定(Structured binding)
 结构化绑定是C++17的新特性，在很多其他语言也有类似的技术，比如：JavaScript的解构赋值，Python的解构等。
 
 对应的语句如下：
 
+```
 1. attr(optional) cv-auto ref-qualifier(optional) [ identifier-list ] = expression;
 2. attr(optional) cv-auto ref-qualifier(optional) [ identifier-list ] = expression;
 3. attr(optional) cv-auto ref-qualifier(optional) [ identifier-list ]( expression );
+```
 
 说明如下：
 
@@ -220,14 +223,71 @@ struct Vector {
 
 Vector v{1.0, 2.0, 3.0};
 auto [x, y, z] = v;
+
+const auto& [rx, ry, rz] = v;
 ```
 
+### 获取成员变量的通用方法
 
+细心的读者可能已经发现了，我们可以使用`绑定成员变量`这个技术来获取成员变量。结构化绑定需要`identifier-list`中的标识符数量和`expression`中的元素数量完全一致，否则无法编译。例如：
+
+```C++
+Vector v{1.0,2.0,3.0};
+const auto& [rx, ry, rz] = v;   // 数量一致，编译通过
+
+const auto& [x1, y1] = v;       // 数量不一致，编译不通过
+```
+
+根据本文前一部分中获取到的成员变量的数量，我们可以写出下面的代码
+
+```C++
+Type t;
+
+if constexpr (member_count<Type>() == 0) {
+} else if constexpr (member_count<Type>() == 1) {
+    auto && [a01] = t;
+} else if constexpr (member_count<Type>() == 2) {
+    auto && [a01, a02] = t;
+}
+```
+
+按照模板继续追加代码，我们就可以根据成员变量的数量做不同的处理。不过，好像写了这么多，这技术在工程上有啥作用呢？我想到一种场景序列化：按照成员变量的顺序写入；反序列化：从文件中读出后按照顺序赋值给成员变量。我们还是要使用到可变参数模板来完成这个魔法, 但是绑定成员变量这一堆代码无法精简的。
+
+```C++
+template<typename T, typename... Args>
+void Visit(T t, Args... args)
+{
+    if constexpr (sizeof...(args) == 0) {
+        cout << t << endl;
+    } else {
+        cout << t << ",";
+        Visit(args...);
+    }
+}
+
+template<typename T>
+void serialize(const T &t) {
+    if constexpr (member_count<T>() == 0) {
+    } else if constexpr (member_count<T>() == 1) {
+        auto && [a01] = t;
+        Visit(a01);
+    } else if constexpr (member_count<T>() == 2) {
+        auto && [a01, a02] = t;
+        Visit(a01, a02);
+    } else if constexpr (member_count<T>() == 3) {
+        auto && [a01, a02, a03] = t;
+        Visit(a01, a02, a03);
+    }
+}
+```
+
+上面`serialize`方法封装了技术细节，根据需要提供不同的`Visit`就可以实现个性化功能。完整的代码参考[reflection-of-member-variables.cpp](reflection-of-member-variables.cpp)
 
 ## 参考
 
 1. https://en.cppreference.com/w/cpp/language/list_initialization
 2. https://en.cppreference.com/w/cpp/language/requires
 3. https://en.cppreference.com/w/cpp/language/structured_binding
-4. https://cloud.tencent.com/developer/article/1736661
-5. https://en.cppreference.com/w/cpp/language/parameter_pack
+4. https://en.cppreference.com/w/cpp/language/parameter_pack
+5. https://cloud.tencent.com/developer/article/1736661
+6. https://github.com/alibaba/yalantinglibs/

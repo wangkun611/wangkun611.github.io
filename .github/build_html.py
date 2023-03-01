@@ -56,7 +56,7 @@ def ConvertFile(base, src, dest):
             "date":  article["date"],
             "path": relative.as_posix().replace(suffix, ".html")
         }
-    elif suffix in [".css", ".jpg", ".png", ".svg", ".txt"]:
+    elif not suffix in [".tpl", ".yaml"]:
         pathlib.Path(dest).mkdir(parents=True, exist_ok=True)
         dest = os.path.join(dest, name)
         subprocess.run(["cp", src, dest]) 
@@ -67,12 +67,14 @@ def ConvertFile(base, src, dest):
 def main(base, src, dest):
     htmlfiles = []
     for file in os.listdir(src):
-        if os.path.isdir(file):
-            if file[0] != '.':
-                htmlfiles.extend(main(base, os.path.join(src, file), os.path.join(dest, file)))
+        if file[0] == '.':
+            continue
+        elif os.path.isdir(file):
+            htmlfiles.extend(main(base, os.path.join(src, file), os.path.join(dest, file)))
         else:
             html = ConvertFile(base, os.path.join(src, file), dest)
             htmlfiles.append(html)
+
     htmlfiles = list(filter(lambda file: file != None and  file["title"] != "", htmlfiles))
     if len(htmlfiles):
         htmlfiles.sort(key=lambda ele: ele["date"], reverse=True)
