@@ -1,3 +1,8 @@
+body {
+    line-height: 1.6em;
+    font-size: 1.2em;
+}
+
 blockquote {
     margin: 1em 0 1em 1.7em;
     padding-left: 1em;
@@ -63,23 +68,22 @@ td {
     padding: 0.125em 0.5em 0.25em 0.5em;
 }
 
-header { margin-bottom: 4em; text-align: center; }
+header { margin-bottom: 0em; text-align: left; }
 header.index { border-bottom: 1px dashed; }
 
-#TOC li {
-    list-style: none;
-}
+.date { font-family: monospace; color: gray; }
 
-#TOC ul {
-    padding-left: 1.3em;
+pre {
+    font-size: 0.87em;
+    line-height: 1.2em;
+    border: 1px solid #cccccc;
+    background: #f5f2f0;
+    padding: 16px;
+    border-radius: 6px;
 }
-
-#TOC>ul {
-    padding-left: 0;
-}
-
-#TOC a:not(:hover) {
-    text-decoration: none;
+:not(pre) > code[class*="sourceCode"],
+pre[class*="sourceCode"] {
+    background: #f5f2f0;
 }
 
 code {
@@ -147,6 +151,7 @@ code.sourceCode>span {
 
 div.sourceCode {
     margin: 1em 0;
+    position: relative;
 }
 
 pre.sourceCode {
@@ -369,3 +374,66 @@ code span.wa {
 }
 
 /* Warning */
+
+:root {
+    --color-success-fg: #3fb950;
+}
+
+.octicon {
+    display: inline-block;
+    overflow: visible !important;
+    vertical-align: text-bottom;
+    fill: currentColor;
+}
+
+.btn {
+    position: relative;
+    display: inline-block;
+    padding: 0px 0px;
+    margin: 8px 8px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 14px;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    border: 1px solid;
+    border-radius: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.m-2 {
+    margin: var(--base-size-8, 8px) !important;
+}
+.position-absolute {
+    position: absolute !important
+}
+
+.right-0 {
+    right: 0 !important;
+}
+
+.top-0 {
+    top: 0 !important;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.sourceCode:hover .zeroclipboard-container {
+    display: block;
+    animation: fade-in 200ms both;
+}
+
+.sourceCode .zeroclipboard-container {
+    display: none;
+    animation: fade-out 200ms both;
+}
+
+.color-fg-success {
+    color: var(--color-success-fg) !important;
+}

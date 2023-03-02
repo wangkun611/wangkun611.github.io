@@ -29,39 +29,41 @@ $endif$
 </head>
 <body>
 $for(include-before)$
-$include-before$
+  $include-before$
 $endfor$
+
 $if(title)$
-<header id="title-block-header">
-<h1 class="title">$title$</h1>
-$if(subtitle)$
-<p class="subtitle">$subtitle$</p>
+  <h1 class="title">$title$</h1>
+  $if(subtitle)$
+    <p class="subtitle">$subtitle$</p>
+  $endif$
+  $for(author)$
+    <p class="author">$author$</p>
+  $endfor$
+  $if(date)$
+    <p class="date">$date$</p>
+  $endif$
+  $if(abstract)$
+    <div class="abstract">
+      <div class="abstract-title">$abstract-title$</div>
+      $abstract$
+    </div>
+  $endif$
 $endif$
-$for(author)$
-<p class="author">$author$</p>
-$endfor$
-$if(date)$
-<p class="date">$date$</p>
-$endif$
-$if(abstract)$
-<div class="abstract">
-<div class="abstract-title">$abstract-title$</div>
-$abstract$
-</div>
-$endif$
-</header>
-$endif$
+
 $if(toc)$
-<nav id="$idprefix$TOC" role="doc-toc">
-$if(toc-title)$
-<h2 id="$idprefix$toc-title">$toc-title$</h2>
+  <nav id="$idprefix$TOC" role="doc-toc">
+    $if(toc-title)$
+      <h2 id="$idprefix$toc-title">$toc-title$</h2>
+    $endif$
+    $table-of-contents$
+  </nav>
 $endif$
-$table-of-contents$
-</nav>
-$endif$
+
 $body$
+
 $for(include-after)$
-$include-after$
+  $include-after$
 $endfor$
 </body>
 </html>

@@ -48,6 +48,7 @@ def ConvertFile(base, src, dest):
               "--metadata-file", os.path.join(base, "metadata.yaml"),
               "--template", os.path.join(base, "article.tpl"),
               "--include-in-header", os.path.join(base, "header.tpl"),
+              "--include-after",  os.path.join(base, "include-after.tpl"),
               "--toc", "-o", dest,
               src])
         article = frontmatter.load(src)
