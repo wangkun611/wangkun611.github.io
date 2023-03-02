@@ -17,7 +17,6 @@ $if(description-meta)$
   <meta name="description" content="$description-meta$" />
 $endif$
   <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
-  <link rel="stylesheet" href="/static/water.css" />
 $for(header-includes)$
   $header-includes$
 $endfor$

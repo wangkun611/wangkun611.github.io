@@ -5,7 +5,6 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>$if(title-prefix)$$title-prefix$ – $endif$$title$</title>
-  <link rel="stylesheet" href="/static/water.css" />
 $for(header-includes)$
   $header-includes$
 $endfor$
