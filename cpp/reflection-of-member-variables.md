@@ -255,33 +255,46 @@ if constexpr (member_count<Type>() == 0) {
 
 ```C++
 template<typename T, typename... Args>
-void Visit(T t, Args... args)
+void serialize_visit(vector<char>& result, const T& t, const Args &... args)
 {
-    if constexpr (sizeof...(args) == 0) {
-        cout << t << endl;
-    } else {
-        cout << t << ",";
-        Visit(args...);
+    serialize_to_vector(result, t);
+    if constexpr (sizeof...(args) > 0) {
+        serialize_visit(result, args...);
     }
 }
 
 template<typename T>
-void serialize(const T &t) {
+vector<char> serialize(const T &t) {
+    vector<char> result;
     if constexpr (member_count<T>() == 0) {
     } else if constexpr (member_count<T>() == 1) {
         auto && [a01] = t;
-        Visit(a01);
+        serialize_visit(result, a01);
     } else if constexpr (member_count<T>() == 2) {
         auto && [a01, a02] = t;
-        Visit(a01, a02);
+        serialize_visit(result, a01, a02);
     } else if constexpr (member_count<T>() == 3) {
         auto && [a01, a02, a03] = t;
-        Visit(a01, a02, a03);
+        serialize_visit(result, a01, a02, a03);
     }
+    return result;
 }
 ```
 
 上面`serialize`方法封装了技术细节，根据需要提供不同的`Visit`就可以实现个性化功能。完整的代码参考[reflection-of-member-variables.cpp](reflection-of-member-variables.cpp)
+
+## Demo
+
+根据上面介绍的所有知识点，我们写了个demo，支持POD、`string`类型的序列化和反序列化，通过提供更多特化的`serialize_to_vector`和`deserialize_from_vector`,从而支持更多的数据类型。Demo使用起来很简单。
+
+```C++
+    Vector v1{1.0, 2.0, 3.0};
+    vector<char> buffer = serialize(v1);
+    // 通过其他方式持续化
+
+    // 反序列号
+    Vector v2 = deserialize<Vector>(buffer);
+```
 
 ## 参考
 
