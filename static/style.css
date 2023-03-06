@@ -22,7 +22,14 @@ body {
     line-height: 1.6em;
     font-size: 1.2em;
 }
-
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    line-height: 1em;
+}
 header { margin-bottom: 0em; text-align: left; }
 header.index { border-bottom: 1px dashed; }
 
