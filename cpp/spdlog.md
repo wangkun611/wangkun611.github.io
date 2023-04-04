@@ -82,8 +82,15 @@ auto async_file_daily = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(
 ```
 `spdlog`默认是同步记录日志的，意味着格式化、记录、文件分割都是同步的。如果，日志记录特别频繁，会影响到业务代码的执行。异步日志对象可以把日志记录、文件分割放到线程池中执行，但是日志格式化还是同步的，因此，如果有大量的格式化，也是会影响到业务代码执行。
 
-除了上面介绍的文件相关的Sink，`spdlog`还支持非常多的Sink,例如：TCP，UDP,Kafka等等。所有的sink都放在`spdlog/sinks`这个目录，可以参考使用。
+除了上面介绍的文件相关的Sink，`spdlog`还支持非常多的Sink,例如：TCP，UDP，Kafka等等。所有的sink都放在`spdlog/sinks`这个目录，可以参考使用。
 
+# spdlog的原理
+`spdlog`库有四大组件：`Logger`、`Registry`、`Sink`和`Formatter`。四大组件共同配合完成日志记录的功能。
+
+- Logger：日志记录接口。提供`log`、`trace`、`debug`等接口给用户使用
+- Registry：`spdlog`中日志对象是命名的，`Registry`负责管理日志对象
+- Sink：日志的具体输出位置。`spdlog`提供了控制台、文件、TCP、UDP、Kafka等等各种各样的Sink
+- Formatter：负责格式化日志。每个日志对象可以使用不同的格式化对象
 
 参考：
 1. https://github.com/fmtlib/fmt
