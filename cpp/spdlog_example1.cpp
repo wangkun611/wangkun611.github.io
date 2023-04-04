@@ -3,6 +3,10 @@
 
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/rotating_file_sink.h"
+#include "spdlog/sinks/daily_file_sink.h"
+#include "spdlog/async.h"
+#include "spdlog/sinks/basic_file_sink.h"
 int main() 
 {
     spdlog::info("Welcome to spdlog!");
@@ -30,4 +34,22 @@ int main()
 
     auto logger_st = spdlog::basic_logger_st("basic_logger_st", "logs/basic-log-st.txt");
     logger_st->info("File logger st");
+
+    auto max_size = 5 * 1024 * 1024;
+    auto max_files = 3;
+    auto logger_rotating = spdlog::rotating_logger_mt("rotating_logger", "logs/rotating.txt", max_size, max_files);
+    logger_rotating->info("Rotating logger");
+
+    // Create a daily logger - a new file is created every day on 2:30am
+    int rotation_hour = 2;
+    int rotation_minute = 30;
+    int max_files_daily = 3;
+    auto logger = spdlog::daily_logger_mt("daily_logger", "logs/daily.txt", 2, 30, false, max_files_daily);
+
+    // Create async logger
+    auto async_file = spdlog::create_async<spdlog::sinks::basic_file_sink_mt>("async_file_logger", "logs/async_log.txt");
+    async_file->info("async_file_logger");
+
+    auto async_file_daily = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>("async_file_logger_daily", "logs/async_log_daily.txt", 2, 30);
+    async_file_daily->info("async_file_logger_daily");
 }
