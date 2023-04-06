@@ -7,6 +7,7 @@
 #include "spdlog/sinks/daily_file_sink.h"
 #include "spdlog/async.h"
 #include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/callback_sink.h"
 int main() 
 {
     spdlog::info("Welcome to spdlog!");
@@ -70,4 +71,11 @@ int main()
         logger.set_level(spdlog::level::debug);
         logger.warn("multi_sink");
     }
+
+
+    // callback
+    auto callback_logger = spdlog::callback_logger_mt("callback_logger_mt", [](const spdlog::details::log_msg &msg){
+        printf("%s\n", msg.payload.data());
+    });
+    callback_logger->info("callback_logger_mt");
 }
