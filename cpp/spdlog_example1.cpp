@@ -52,4 +52,8 @@ int main()
 
     auto async_file_daily = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>("async_file_logger_daily", "logs/async_log_daily.txt", 2, 30);
     async_file_daily->info("async_file_logger_daily");
+
+    // Registry
+    auto async_file_logger_daily_ref = spdlog::get("async_file_logger_daily");
+    async_file_logger_daily_ref->info("async_file_logger_daily_ref");
 }

@@ -92,6 +92,10 @@ auto async_file_daily = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(
 - Sink：日志的具体输出位置。`spdlog`提供了控制台、文件、TCP、UDP、Kafka等等各种各样的Sink
 - Formatter：负责格式化日志。每个日志对象可以使用不同的格式化对象
 
+各个组件的关系如下所示：
+
+![spdlog uml](spdlog_uml.png)
+
 参考：
 1. https://github.com/fmtlib/fmt
 2. https://github.com/gabime/spdlog/wiki/3.-Custom-formatting#pattern-flags
