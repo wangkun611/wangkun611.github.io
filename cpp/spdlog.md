@@ -96,6 +96,11 @@ auto async_file_daily = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(
 
 ![spdlog uml](spdlog_uml.png)
 
+# 迁移中遇到的问题
+
+1. 之前的代码使用宏，类`sprintf`的方式格式化代码，例如：`XXX_Info("Duration: %d", duration);`。我们直接修改宏完成了所有替换，另外由于我们基本没使用高级格式化特性，所以使用了全文替换,把`%[a-z]`替换成`{}`。
+2. 我们有个日志文件加密了，全文是base64编码，文件第一行是使用公钥加密的AES密钥，后面是使用AES加密的日志内容。我们使用了`callback_logger_mt`自定义输出方式完成了加密工作。在程序初始化时，打开日志文件，写入第一行AES密钥；在程序退出前，关闭日志文件。
+
 参考：
 1. https://github.com/fmtlib/fmt
 2. https://github.com/gabime/spdlog/wiki/3.-Custom-formatting#pattern-flags
