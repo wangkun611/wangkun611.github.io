@@ -6,7 +6,7 @@ draft: false
 
 之前有个项目使用的log4cpp记录日志，项目目前已经完全采用C++11了。是时候更新下日志库了。
 
-# spdlog的简介
+## spdlog的简介
 spdlog是一个“非常快的”，仅使用头文件的，C++的日志库。有以下几个特点：
  - 使用 C++11
  - 跨平台
@@ -15,9 +15,9 @@ spdlog是一个“非常快的”，仅使用头文件的，C++的日志库。�
  - 支持多种目标和级别
  - 线程安全，也提供了高性能的单线程功能
 
-# spdlog的使用
+## spdlog的使用
 
-## 安装spdlog
+### 安装spdlog
 本人使用CentOS,dnf没有`spdlog`包。从源码安装也很简单。根据官方提示
 ``` shell
 $ git clone https://github.com/gabime/spdlog.git
@@ -25,7 +25,7 @@ $ cd spdlog && mkdir build && cd build
 $ cmake .. && make -j
 ```
 
-## 简单使用
+### 简单使用
 
 首先包含头文件 `#include <spdlog/spdlog.h>`，然后可以直接使用`spdlog::info("Welcome to spdlog!");`打印log，这条语句把log打印到控制台上。
 
@@ -39,7 +39,7 @@ $ cmake .. && make -j
 
 更多内容可以参考[spdlog_example1.cpp](spdlog_example1.cpp)
 
-## 高级日志对象
+### 高级日志对象
 
 `spdlog`默认创建了stdout的日志对象，定义`SPDLOG_DISABLE_DEFAULT_LOGGER`宏可以禁止创建默认日志对象。禁止创建默认日志对象后，`spdlog::error`就无法打印日志了，需要通过`spdlog::set_default_logger(new_logger);`手动注册默认日志对象。
 
@@ -84,7 +84,7 @@ auto async_file_daily = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(
 
 除了上面介绍的文件相关的Sink，`spdlog`还支持非常多的Sink,例如：TCP，UDP，Kafka等等。所有的sink都放在`spdlog/sinks`这个目录，可以参考使用。
 
-# spdlog的原理
+## spdlog的原理
 `spdlog`库有四大组件：`Logger`、`Registry`、`Sink`和`Formatter`。四大组件共同配合完成日志记录的功能。
 
 - Logger：日志记录接口。提供`log`、`trace`、`debug`等接口给用户使用
@@ -96,7 +96,7 @@ auto async_file_daily = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(
 
 ![spdlog uml](spdlog_uml.png)
 
-# 迁移中遇到的问题
+## 迁移中遇到的问题
 
 1. 之前的代码使用宏，类`sprintf`的方式格式化代码，例如：`XXX_Info("Duration: %d", duration);`。我们直接修改宏完成了所有替换，另外由于我们基本没使用高级格式化特性，所以使用了全文替换,把`%[a-z]`替换成`{}`。
 2. 我们有个日志文件加密了，全文是base64编码，文件第一行是使用公钥加密的AES密钥，后面是使用AES加密的日志内容。我们使用了`callback_logger_mt`自定义输出方式完成了加密工作。在程序初始化时，打开日志文件，写入第一行AES密钥；在程序退出前，关闭日志文件。
