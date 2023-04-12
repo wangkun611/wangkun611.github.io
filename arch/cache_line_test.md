@@ -40,6 +40,8 @@ auto thread_write_proc = [](char *buff, int size) {
 };
 ````
 
+完整的测试代码参考[cache_line_test.cpp](cache_line_test.cpp)
+
 ## 测试一
 单线程读取内存，代码如下
 ```C++
@@ -172,3 +174,7 @@ user	0m2.010s
 sys	0m0.011s
 ````
 明显比测试五花费更少的时间，说明缓存行隔离是有效的。
+
+## 结论
+
+通过缓存行隔离让测试有了非常大的性能提升。
