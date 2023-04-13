@@ -14,3 +14,7 @@ draft: true
 6. 点击菜单选项：Edit->Patch program->Apply patches to input file...，选择输入文件，是否需要备份等选项后，点击OK
 7. 完成了文件修改
 
+## jump 到任意位置
+
+1. 定位到要跳转的位置，例如：00000001805E18D8，点击N,输入名称，最好起一个有意义的名字，也可以使用 loc_1805E18D8
+2. 在 Assemble instruction对话框 中输入 jmp loc_1805E18D8
